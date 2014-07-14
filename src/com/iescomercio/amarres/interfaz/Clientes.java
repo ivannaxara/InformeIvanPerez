@@ -58,10 +58,9 @@ public class Clientes extends javax.swing.JFrame {
         }
     }
 
-    private void guardarDatos(char operacion) {
+    private void guardarDatos(char operacion) { //Con este metodo pasaremos los datos que se nos indican en un nuevo cliente
         Cliente cli = new Cliente();
-        // metodo para leer datos del formulario y setearlos en un cliente que le pasamos
-        try {
+        try {  
             cli.setApellidos(jTextFieldApellidos.getText());
             cli.setCodigo(Integer.parseInt(jTextFieldCodigo.getText()));
             cli.setDni(jTextFieldDNI.getText());
@@ -361,7 +360,6 @@ public class Clientes extends javax.swing.JFrame {
         try {
             this.listaClientes.removeCliente();
             jLabelInfo.setText("Registro borrado. Se actualizara al cerrar.");
-            //this.limpiarFormulario();
         } catch (IndexOutOfBoundsException ex) {
             window.setMensaje("Acceso a datos incorrecto", ex);
         }    }//GEN-LAST:event_jButtonEliminarActionPerformed
@@ -415,7 +413,7 @@ public class Clientes extends javax.swing.JFrame {
             window.setMensaje("Clase no encontrada", ex);
         } catch (SQLException ex) {
             window.setMensaje("Error SQL", ex);
-        }        // TODO add your handling code here:
+        }        
     }//GEN-LAST:event_formWindowClosing
 
     /**

@@ -25,7 +25,7 @@ public class ListaClientes {
     private ArrayList<Cliente> ColeccionClientes;
     private int indice, idLista;
     private Connection con;
-    private Statement stmt; // Constructores
+    private Statement stmt;
     private ArrayList<Cliente> ClientesBorrados;
 
     public ListaClientes() {
@@ -33,9 +33,7 @@ public class ListaClientes {
             ColeccionClientes = new ArrayList();
             ClientesBorrados = new ArrayList();
             this.indice = 0;
-            // Carga de forma dinámica el driver de Oracle
             Class.forName("oracle.jdbc.driver.OracleDriver");
-            // Establece la conexión
             con = DriverManager.getConnection(
                     "jdbc:oracle:thin:@192.168.80.136:1521:XE",
                     "system",
@@ -78,14 +76,10 @@ public class ListaClientes {
     }
 
     public void removeCliente() {
-        // solo entra si la coleccion NO esta vacia
-        if (!ColeccionClientes.isEmpty()) {
-            // en vez de borrar el velero lo pongo operacion R (remove)
-
+        if (!ColeccionClientes.isEmpty()) {  //Es muy importante comprobar que la coleccion no esta vacia
             ClientesBorrados.add(this.ColeccionClientes.get(indice));
             this.ColeccionClientes.remove(indice);
             this.primerCliente();
-            //this.veleroColeccion.remove(indice);
         }
     }
 
@@ -144,7 +138,6 @@ public class ListaClientes {
     public void leeFichero() {
         try {
             ResultSet rs = stmt.executeQuery("SELECT * FROM BARCOS.CLIENTE ORDER BY CODIGO");
-            // Relleno la coleccion con los campos de la tabla              
             while (rs.next()) {
                 int codigo = rs.getInt("codigo");
                 String dni = rs.getString("dni");
@@ -152,7 +145,7 @@ public class ListaClientes {
                 String apellidos = rs.getString("apellidos");
                 String estadoCivil = rs.getString("estadoCivil");
                 String direccion = rs.getString("direccion");
-                
+
                 Float telefonoFijo = rs.getFloat("telefonoFijo");
                 Float telefonoMovil = rs.getFloat("telefonoMovil");
                 int edad = rs.getInt("edad");
@@ -160,19 +153,18 @@ public class ListaClientes {
                 this.idLista = clien.getCodigo();
                 this.ColeccionClientes.add(clien);
             }
-        }
-         catch (SQLException ex) {
-            System.out.println("un error mas");
-        }finally{
-            try{
-                rs.close();  
-            }catch(SQLException ex){
-                System.out.println("error");
+        } catch (SQLException ex) {
+            System.out.println("un error en el codigo sql");
+        } finally {
+            try {
+                rs.close();
+            } catch (SQLException ex) {
+                System.out.println("error con el resultSet");
             }
         }
     }
+
     
-    //FALTA ESTO 
     public void escribeFichero() throws IOException, ClassNotFoundException, SQLException {
         String sql;
         int x;
@@ -185,32 +177,27 @@ public class ListaClientes {
                         + "dni, nombre, apellidos, direccion, "
                         + "telefonofijo, telefonomovil, edad, estadocivil) "
                         + "Values (" + cli.toString() + ")";
-                //System.out.println(sql);
                 x = stmt.executeUpdate(sql);
-            } else if (cli.getOperacion() == 'U') {                
+            } else if (cli.getOperacion() == 'U') {
                 sql = "UPDATE BARCOS.CLIENTE SET codigo = '" + cli.getCodigo()
                         + "', dni = '" + cli.getDni()
                         + "', nombre = '" + cli.getNombre()
-                        + "', apellidos = " + cli.getApellidos()
-                        + ", direccion = " + cli.getDireccion()
-                        + ", telefonofijo = " + cli.getTelefonoFijo()
+                        + "', apellidos = '" + cli.getApellidos()
+                        + "', direccion = '" + cli.getDireccion()
+                        + "', telefonofijo = " + cli.getTelefonoFijo()
                         + ", telefonomovil = " + cli.getTelefonoMovil()
                         + ", edad = " + cli.getEdad()
                         + ", estadocivil = '" + cli.getEstadoCivil()
-                        // FALTA EL WHERE PARA UPDATE QUE REGISTRO ACTUALIZO ?
-                        // REVISAR EL ATRIBUTO ID DE VELERO Y LISTAVELERO
-                        + "' WHERE CODIGO = " + cli.getCodigo();
+                        + "' WHERE CODIGO = '" + cli.getCodigo()+"'";
                 System.out.println(sql);
                 x = stmt.executeUpdate(sql);
             }
-            // Eleminando registro borrados
             Iterator it = this.ClientesBorrados.iterator();
-            while(it.hasNext()) {                
-                sql = "DELETE FROM BARCOS.CLIENTE WHERE CODIGO = '" + ((Cliente)it.next()).getCodigo() + "'";
-                //System.out.println(sql);
+            while (it.hasNext()) {
+                sql = "DELETE FROM BARCOS.CLIENTE WHERE CODIGO = '" + ((Cliente) it.next()).getCodigo() + "'";
                 x = stmt.executeUpdate(sql);
             }
-            
+
         }
         stmt.close();
         con.close();

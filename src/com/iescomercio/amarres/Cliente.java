@@ -113,6 +113,6 @@ public class Cliente {
     
     @Override
     public String toString(){
-        return "'"+getCodigo() + "', '" +getDni() + "', '" +getNombre() +  "', '"  +getApellidos() +  "', '"  +getDireccion()+  "', '"  +getTelefonoFijo() + "', '"  +getTelefonoMovil() +  "', '"  +getEdad()+"', '"+getEstadoCivil()+"'";
+        return getCodigo() + ", '" +getDni() + "', '" +getNombre() +  "', '"  +getApellidos() +  "', '"  +getDireccion()+  "', "  +getTelefonoFijo() + ", "  +getTelefonoMovil() +  ", "  +getEdad()+", '"+getEstadoCivil()+"'";
     }
 }
